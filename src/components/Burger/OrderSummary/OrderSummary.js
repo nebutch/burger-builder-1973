@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import classes from './OrderSummary.css';
 
 const orderSummary = (props) => {
     const price = new Intl.NumberFormat('en-US', {
@@ -7,8 +8,8 @@ const orderSummary = (props) => {
     }).format(props.total);
     const ingredients = Object.keys(props.ingredients).map((key) => {
         return (
-            <li>
-                {key}:{props.ingredients[key]}
+            <li key={key} className={classes.OrderSummary}>
+                <span>{key}</span>:{props.ingredients[key]}
             </li>
         );
     });
@@ -18,6 +19,7 @@ const orderSummary = (props) => {
             <p>A delish burger with these ingredients:</p>
             <ul>{ingredients}</ul>
             <p>This is the order summary. Your total is {price}</p>
+            <p>Continue to checkout?</p>
         </Fragment>
     );
 };

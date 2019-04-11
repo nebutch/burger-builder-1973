@@ -1,7 +1,7 @@
 .Modal {
     position: fixed;
     z-index: 500;
-    background-color: white;
+    background-color: wheat;
     width: 70%;
     border: 1px solid #ccc;
     box-shadow: 1px 1px 1px black;
@@ -9,7 +9,19 @@
     left: 15%;
     top: 30%;
     box-sizing: border-box;
-    transition: all 0.3s ease-out;
+    transition: all 0.5s ease-out;
+}
+
+.Show {
+    composes: Modal;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.Hide {
+    composes: Modal;
+    opacity: 0;
+    transform: translateY(-100vh);
 }
 
 @media (min-width: 600px) {

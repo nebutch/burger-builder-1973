@@ -102,14 +102,12 @@ class BurgerBuilder extends Component {
         }
         return (
             <Fragment>
-                {this.state.showModal && (
-                    <Modal>
-                        <OrderSummary
-                            ingredients={this.state.ingredients}
-                            total={this.state.totalPrice}
-                        />
-                    </Modal>
-                )}
+                <Modal show={this.state.showModal}>
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                        total={this.state.totalPrice}
+                    />
+                </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <Controls
                     total={this.state.totalPrice}
