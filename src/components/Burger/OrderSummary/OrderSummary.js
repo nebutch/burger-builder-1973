@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react';
+import Button from '../../UI/Button/Button';
+import constants from '../../../constants';
 import classes from './OrderSummary.css';
 
 const orderSummary = (props) => {
@@ -18,8 +20,17 @@ const orderSummary = (props) => {
             <h3>Order Summary</h3>
             <p>A delish burger with these ingredients:</p>
             <ul>{ingredients}</ul>
-            <p>This is the order summary. Your total is {price}</p>
+            <p>
+                This is the order summary. Your total is{' '}
+                <strong>{price}</strong>
+            </p>
             <p>Continue to checkout?</p>
+            <Button click={props.cancelClicked} btnType={constants.DANGER}>
+                CANCEL
+            </Button>
+            <Button click={props.continueClicked} btnType={constants.SUCCESS}>
+                CONTINUE
+            </Button>
         </Fragment>
     );
 };

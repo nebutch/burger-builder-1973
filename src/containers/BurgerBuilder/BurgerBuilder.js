@@ -92,6 +92,14 @@ class BurgerBuilder extends Component {
         this.setState({ showModal: true });
     };
 
+    backdropClickedHandler = () => {
+        this.setState({ showModal: false });
+    };
+
+    continueClickedHandler = () => {
+        alert('Continue order...');
+    };
+
     render() {
         const disabled = {
             ...this.state.ingredients
@@ -102,10 +110,15 @@ class BurgerBuilder extends Component {
         }
         return (
             <Fragment>
-                <Modal show={this.state.showModal}>
+                <Modal
+                    show={this.state.showModal}
+                    backdropClicked={this.backdropClickedHandler}
+                >
                     <OrderSummary
                         ingredients={this.state.ingredients}
                         total={this.state.totalPrice}
+                        cancelClicked={this.backdropClickedHandler}
+                        continueClicked={this.continueClickedHandler}
                     />
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />

@@ -1,16 +1,13 @@
 import React from 'react';
-import Enzyme, { shallow } from 'enzyme';
-import EnzymeAdapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 import App from './App';
-
-Enzyme.configure({ adapter: new EnzymeAdapter() });
 
 describe('<App />', () => {
     it('should render without error', () => {
         const wrapper = shallow(<App />);
-        expect(wrapper).toBeTruthy();
+        expect(wrapper).toBeDefined();
     });
-    
+
     /* it('should render one img node', () => {
       const wrapper = shallow(<App />);
       expect(wrapper.find('<CoreLayout />')).toBeTruthy();
