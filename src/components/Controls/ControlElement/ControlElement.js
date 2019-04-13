@@ -5,7 +5,11 @@ const controlElement = (props) => {
     return (
         <div className={classes.ControlElement}>
             <div className={classes.Label}>{props.label}</div>
-            <button disabled={props.lessDisabled} onClick={props.removed} className={classes.Less}>
+            <button
+                disabled={props.lessDisabled}
+                onClick={props.removed}
+                className={classes.Less}
+            >
                 Less
             </button>
             <button onClick={props.added} className={classes.More}>
@@ -15,4 +19,4 @@ const controlElement = (props) => {
     );
 };
 
-export default controlElement;
+export default React.memo(controlElement);

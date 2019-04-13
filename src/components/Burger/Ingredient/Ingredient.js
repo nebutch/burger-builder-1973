@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classes from './Ingredient.css';
 
-class Ingredient extends Component {
+class Ingredient extends PureComponent {
     render() {
         let ingredient;
 
@@ -40,7 +40,7 @@ class Ingredient extends Component {
 }
 
 Ingredient.propTypes = {
-    type: PropTypes.string
+    type: PropTypes.string.isRequired
 };
 
 export default Ingredient;

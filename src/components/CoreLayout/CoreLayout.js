@@ -8,7 +8,7 @@ class CoreLayout extends React.Component {
         super(props);
 
         this.state = {
-            drawerOpen: true
+            drawerOpen: false
         };
     }
 
@@ -17,11 +17,18 @@ class CoreLayout extends React.Component {
         this.setState({ drawerOpen: false });
     };
 
+    drawerToggleHandler = () => {
+        console.log('drawer opened');
+        this.setState((prevState) => {
+            return { drawerOpen: !prevState.drawerOpen };
+        });
+    };
+
     render() {
         return (
             <Fragment>
                 <div>
-                    <Toolbar />
+                    <Toolbar drawerToggled={this.drawerToggleHandler} />
                     <Drawer
                         drawerClosed={this.drawerClosedHandler}
                         open={this.state.drawerOpen}

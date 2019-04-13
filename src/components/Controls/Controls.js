@@ -28,7 +28,13 @@ const controls = (props) => {
                     />
                 );
             })}
-            <button onClick={props.onOrderClicked} disabled={!props.purchasable} className={classes.OrderButton}>ORDER NOW</button>
+            <button
+                onClick={props.onOrderClicked}
+                disabled={!props.purchasable}
+                className={classes.OrderButton}
+            >
+                ORDER NOW
+            </button>
         </div>
     );
 };
