@@ -12,11 +12,6 @@ it('should have one main node', () => {
     expect(wrapper.find('main')).toHaveLength(1);
 });
 
-it('should have one div node', () => {
-    const wrapper = mount(<CoreLayout />);
-    expect(wrapper.find('div')).toHaveLength(1);
-});
-
 /* it('should render one img node', () => {
       const wrapper = shallow(<App />);
       expect(wrapper.find('<CoreLayout />')).toBeTruthy();
