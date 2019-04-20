@@ -3,6 +3,8 @@ import Burger from '../../components/Burger/Burger';
 import Controls from '../../components/Controls/Controls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import axios from '../../axios-orders';
 
 const PRICES = {
     lettuce: 0.5,
@@ -27,7 +29,8 @@ class BurgerBuilder extends Component {
             },
             totalPrice: 4,
             purchasable: false,
-            showModal: false
+            showModal: false,
+            loading: false
         };
     }
 
@@ -97,7 +100,32 @@ class BurgerBuilder extends Component {
     };
 
     continueClickedHandler = () => {
-        alert('Continue order...');
+        // alert('Continue order...');
+        this.setState({ loading: true });
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Nolan Butcher',
+                email: 'nolan@website.com',
+                address: {
+                    street: '1234 Main Street',
+                    city: 'Centerville',
+                    zip: '10001'
+                }
+            },
+            deliveryMethod: 'ground'
+        };
+        axios
+            .post('/orders.json', order)
+            .then((response) => {
+                console.log('order submitted:\n', response);
+                this.setState({ loading: false, showModal: false });
+            })
+            .catch((error) => {
+                console.error('Problem sending order:\n', error);
+                this.setState({ loading: false, showModal: false });
+            });
     };
 
     render() {
@@ -108,18 +136,25 @@ class BurgerBuilder extends Component {
         for (let key in disabled) {
             disabled[key] = disabled[key] <= 0;
         }
+
+        let orderSummary = (
+            <OrderSummary
+                ingredients={this.state.ingredients}
+                total={this.state.totalPrice}
+                cancelClicked={this.backdropClickedHandler}
+                continueClicked={this.continueClickedHandler}
+            />
+        );
+        if (this.state.loading) {
+            orderSummary = <Spinner />;
+        }
         return (
             <Fragment>
                 <Modal
                     show={this.state.showModal}
                     backdropClicked={this.backdropClickedHandler}
                 >
-                    <OrderSummary
-                        ingredients={this.state.ingredients}
-                        total={this.state.totalPrice}
-                        cancelClicked={this.backdropClickedHandler}
-                        continueClicked={this.continueClickedHandler}
-                    />
+                    {orderSummary}
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <Controls
