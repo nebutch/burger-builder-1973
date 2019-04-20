@@ -35,8 +35,8 @@ module.exports = {
         'node'
     ],
     watchPlugins: [
-        '/Users/nolan.butcher/Documents/repositories/burger-builder-1973/node_modules/jest-watch-typeahead/filename.js',
-        '/Users/nolan.butcher/Documents/repositories/burger-builder-1973/node_modules/jest-watch-typeahead/testname.js'
+        '<rootDir>/node_modules/jest-watch-typeahead/filename.js',
+        '<rootDir>/node_modules/jest-watch-typeahead/testname.js'
     ],
     setupTestFrameworkScriptFile: '<rootDir>/config/jest/setupTests.js',
     collectCoverage: true,
