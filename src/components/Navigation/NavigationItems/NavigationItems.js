@@ -6,8 +6,11 @@ import classes from './NavigationItems.css';
 const navigationItems = (props) => {
     const items = Object.keys(constants.navigation).map((key) => {
         return (
-            <NavigationItem key={key} link="/" active={false}>
-                {constants.navigation[key]}
+            <NavigationItem
+                key={key}
+                link={`/${constants.navigation[key].link}`}
+            >
+                {constants.navigation[key].label}
             </NavigationItem>
         );
     });

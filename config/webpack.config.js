@@ -243,6 +243,15 @@ module.exports = function(webpackEnv) {
       // https://twitter.com/wSokra/status/969679223278505985
       runtimeChunk: true,
     },
+    
+    /* resolve: {
+      modules: [path.resolve(__dirname, './src'), 'node_modules'],
+      extensions: ['.js', '.jsx', '.json'],
+      alias: {
+        reducers: path.resolve(__dirname, './src/reducers')
+      }
+    }, */
+    
     resolve: {
       // This allows you to set a fallback for where Webpack should look for modules.
       // We placed these paths second because we want `node_modules` to "win"

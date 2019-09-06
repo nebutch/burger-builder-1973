@@ -5,30 +5,30 @@
     width: 11em;
     height: 11em;
     border-radius: 50%;
-    background: #942192;
+    background: #c45e38;
     background: -moz-linear-gradient(
         left,
-        #942192 10%,
+        #c45e38 10%,
         rgba(148, 33, 146, 0) 42%
     );
     background: -webkit-linear-gradient(
         left,
-        #942192 10%,
+        #c45e38 10%,
         rgba(148, 33, 146, 0) 42%
     );
     background: -o-linear-gradient(
         left,
-        #942192 10%,
+        #c45e38 10%,
         rgba(148, 33, 146, 0) 42%
     );
     background: -ms-linear-gradient(
         left,
-        #942192 10%,
+        #c45e38 10%,
         rgba(148, 33, 146, 0) 42%
     );
     background: linear-gradient(
         to right,
-        #942192 10%,
+        #c45e38 10%,
         rgba(148, 33, 146, 0) 42%
     );
     position: relative;
@@ -41,7 +41,7 @@
 .Loader:before {
     width: 50%;
     height: 50%;
-    background: wheat;
+    background: white;
     border-radius: 100% 0 0 0;
     position: absolute;
     top: 0;
@@ -49,7 +49,7 @@
     content: '';
 }
 .Loader:after {
-    background: wheat;
+    background: white;
     width: 75%;
     height: 75%;
     border-radius: 50%;
