@@ -1,0 +1,511 @@
+{
+    "configBuildVersion": "1.2.7",
+    "configuration": {
+        "version": "v9.1",
+        "fetchInterval": 600000,
+        "useInternationalData": true,
+        "allowCreateAccount": false,
+        "allowPurchaseAccount": false,
+        "allowAlerts": false,
+        "allowClosedCaptions": true,
+        "appName": "MLB.TV",
+        "platform": "HTML5",
+        "emailRegEx": "(.+)@(.+)\\.(.+)",
+        "maxEmailDisplaySize": 30,
+        "isBackgroundImageDisabled": false,
+        "shouldInitializeDevice": true,
+        "wildcard": { "block": false, "startMonth": 5, "endMonth": 11 },
+        "shouldUseEmailValidation": true,
+        "shouldUseModalForLoginError": false,
+        "showMessageOnStart": false,
+        "onStartMessageKey": "deviceNotSupported2019",
+        "internationalDateRanges": [
+            { "start": 1485925200000, "end": 1490155200000 }
+        ]
+    },
+    "queries": {
+        "dictionary": "{ ConfigurationJsonByResourceKey(resourceKey: \"${lang}\") { configuration { key val } } }",
+        "airings": "query AiringsByDate($date: String) {Airings(startDate: $date, endDate: $date){contentId programType titles{title} channel{id callsign} mediaConfig{state type} playbackUrls{href rel} partnerProgramId feedType tags{type value}}}",
+        "videosByGamePks": "query ($index: String = \"mlb_global\", $playbacks: [String] = [\"HTTP_CLOUD_WIRED_60\", \"HTTP_CLOUD_WIRED\"], $gamePks: [String]!, $subjects: [String] = [\"MLBCOM_GAME_RECAP\", \"MLBCOM_CONDENSED_GAME\"], $page: Int = 0, $page_size: Int = 100) { query(index: $index, type: [\"video\"], must: {termsFilters: [{attributeName: \"tag_subject\", values: $subjects}, {attributeName: \"tag_game_pk\", values: $gamePks }]}, page: $page, page_size: $page_size) { meta { hits } hits { hit { ... on video { type asset_id: id mediaPlaybackId title blurb duration seoTitle language date keywordsAll { type displayName value } playbacks(name: $playbacks) { name width height url } } } } } }"
+    },
+    "persistedQueries": { "airings": "core/Airings" },
+    "searches": { "videosTopic": "/v2/content/en-us/videos" },
+    "fetches": {
+        "mlbDate": "schedule?sportId=${sportId}&fields=dates,date",
+        "dictionary": "/static/bbd/dictionary.json",
+        "seasonDates": "seasons?sportId=${sportId}&season=${season}",
+        "linescore": "schedule?hydrate=linescore,team&gamePk=${gamePk}",
+        "masterScoreboard": "schedule?hydrate=linescore(runners,matchup),team,probablePitcher(note),person,stats,game(content(media(epg))),decisions&date=${date}&sportId=${sportId}",
+        "gameScoreboard": "schedule?hydrate=linescore(runners,matchup),team,probablePitcher(note),person,stats,game(content(media(epg))),decisions&gamePk=${gamePk}",
+        "seasonRange": "schedule?sportId=${sportId}&endDate=12/31/${season}&startDate=01/01/${season}&fields=dates,totalGames,date,games,season,gamePk",
+        "monthRange": "schedule?hydrate=team&sportId=${sportId}&endDate=${endDate}&startDate=${startDate}&teamId=${teamId}",
+        "boxscore": "game/${gamePk}/boxscore?hydrate=person",
+        "gameContent": "game/${gamePk}/content",
+        "gameFeed": "game/${gamePk}/feed/live",
+        "gameLineScore": "game/${gamePk}/linescore",
+        "teamSchedule": "teams/${teamId}?hydrate=previousSchedule(date=${date},limit=2,gameType=[E,S,R,A,F,D,L,W],linescore(runners,matchup),team,probablePitcher(note),game,decisions,person,stats),nextSchedule(date=${date},limit=4,gameType=[E,S,R,A,F,D,L,W],linescore(runners,matchup),team,probablePitcher(note),game,decisions,person,stats)&sportId=${sportId}",
+        "monthRangeAllTeams": "schedule?hydrate=team&sportId=${sportId}&endDate=${endDate}&startDate=${startDate}&fields=dates,date,totalGames,games,calendarEventID,status,codedGameState",
+        "standings": "standings?hydrate=team&standingsType=regularSeason&leagueId=103,104&season=${season}",
+        "wildcard": "standings?standingsType=wildCardWithLeaders&hydrate=team&leagueId=103,104&season=${season}",
+        "team": "teams?sportId=${sportId}&fields=teams,venue,id,name,shortName,fileCode,abbreviation,division,league",
+        "mediaCatalog": "op-findUserVerifiedEvent/v-2.3?format=json&platform=${platform}&subject=LIVE_EVENT_COVERAGE&auth=cookie&eventId=${calendarEventId}&fingerprint=${fingerprint}&identityPointId=${identityPointId}&sessionKey=${sessionKey}",
+        "mediaCatalogAnonymous": "op-findUserVerifiedEvent/v-2.3?format=json&platform=${platform}&subject=LIVE_EVENT_COVERAGE&auth=cookie&eventId=${calendarEventId}",
+        "mediaContent": "op-findUserVerifiedEvent/v-2.3?format=json&platform=${platform}&subject=LIVE_EVENT_COVERAGE&auth=cookie&eventId=${calendarEventId}&contentId=${contentId}&playbackScenario=${playbackScenario}&fingerprint=${fingerprint}&identityPointId=${identityPointId}&sessionKey=${sessionKey}",
+        "milestones": "game/${gamePk}/playByPlay"
+    },
+    "userServices": {
+        "credPath": "/api/v1/migrate/user/cred",
+        "oktaIssuerPath": "/oauth2/${authServerId}",
+        "oktaRedirectPath": "/html5/browser_browser_es5/callback.html",
+        "oktaAuthorizePath": "/oauth2/${authServerId}/v1/authorize",
+        "oktaAuthorizeQuery": "?client_id=${clientId}&response_type=code&scope=openid%20offline_access&redirect_uri=${redirectUri}&state=${state}&sessionToken=${sessionToken}",
+        "oktaProfilePath": "/api/v1/profile",
+        "entitlementPath": "/entitlements?principalId=${principalId}&includeFeatures=true&principalType=user",
+        "jwtUrl": "/api/v3/jwt?os=${os}&appname=${appname}&did=${deviceid}",
+        "deviceIdentityPointType": "html5Samsung",
+        "deviceProfilePropertyName": "html5SamsungDeviceId",
+        "feature": {
+            "context": "MLBTV2017.INAPPPURCHASE",
+            "name": "mlbtvOwned"
+        },
+        "entitlement": {
+            "premium": "MLBALL",
+            "exec": "EXECMLB",
+            "singleTeam": "MLBTV_STP_"
+        },
+        "requestTimeoutSeconds": 15,
+        "tokenClockSkewSeconds": 30,
+        "useShim": true,
+        "oktaClientId": "0oaj93qdnuElkekm80h7",
+        "authServerId": "ausg0y0s07iKGqVKv0h7",
+        "oktaTokenProxyPath": "/qa/api/v1/flow/code/token"
+    },
+    "content": {
+        "sportId": "1",
+        "internationalSportId": "51",
+        "currentSeason": "2019",
+        "enabledSeasons": [2019, 2018],
+        "maxAges": { "default": 86400000, "MLB_CACHE_KEY_MLB_DATE": 600000 },
+        "images": {
+            "venueUrl": "//cd-images.mlbstatic.com/stadium-backgrounds/color/light-theme/1920x1080/${venueId}.jpg",
+            "defaultVenueUrl": "//cd-images.mlbstatic.com/stadium-backgrounds/color/light-theme/1920x1080/2395.jpg",
+            "gamedayAudioVenueUrl": "//cd-images.mlbstatic.com/stadium-backgrounds/gameday-audio/1920x1080/${venueId}.png",
+            "logoUrl": "//cd-images.mlbstatic.com/team-logos/html5/${resolution}/${size}/${background}/${teamId}.png",
+            "headShotUrl": "//content.mlb.com/images/headshots/current/60x60/${playerId}.png",
+            "homeHeadShotUrl": "//content.mlb.com/images/headshots/current/60x60/${playerId}@2x.png",
+            "actionShotUrl": "https://secure.mlb.com/images/players/525x330/${playerId}.jpg"
+        },
+        "splashBackgroundImages": {
+            "720": [
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/720/00_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/720/01_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/720/02_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/720/03_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/720/04_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/720/05_Subscribe_Login_Images.jpg"
+            ],
+            "1080": [
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/1080/00_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/1080/01_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/1080/02_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/1080/03_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/1080/04_Subscribe_Login_Images.jpg",
+                "//cd-images.mlbstatic.com/slideshow-images/low-power/1080/05_Subscribe_Login_Images.jpg"
+            ]
+        },
+        "splashBackgroundImagesInterval": 15000,
+        "splashBackgroundSlideshowEnabled": true,
+        "recapSlug": "game-recap",
+        "condensedGameSlug": "condensed-game",
+        "statsBaseUrl": "//qa-statsapi.mlb.com/api/v1/",
+        "searchBaseUrl": "https://dapi.cms-qa.mlbinfra.com",
+        "bamServiceBaseUrl": "https://qa-ids.mlb.com",
+        "bamTokenProxyBaseUrl": "https://8zze2b2pt2.execute-api.us-east-1.amazonaws.com",
+        "bamShimServiceBaseUrl": "https://qa-ids-shim.mlb.com",
+        "bamProfileBaseUrl": "https://profile-qa.mlb.com",
+        "bamMediaBase": "https://mlb-ws-mf.media.mlb.com/pubajaxws/bamrest/MediaService2_0/",
+        "bamDictionaryBase": "https://cd-qa.mlb.com/html5/",
+        "jwtBase": "https://qa-media-entitlement.mlb.com",
+        "bamEntitlementBaseUrl": "https://mlbentitlementservices.commerce-qa.mlbinfra.com"
+    },
+    "errors": {
+        "mediaFramework": {
+            "name": "mediaFramework",
+            "enabledCodes": [
+                1,
+                2,
+                3,
+                4,
+                -1000,
+                -1009,
+                -1100,
+                -1500,
+                -1600,
+                -2000,
+                -3000,
+                -3500,
+                -4000
+            ],
+            "defaultCode": 0,
+            "noButtons": [],
+            "twoButtons": [1, 2, 3, -3500],
+            "registeredAccountRequiredCode": 1,
+            "registeredAccountRequiredFreeCode": 2,
+            "premiumAccountRequiredCode": 3,
+            "videoErrorCode": 4,
+            "premiumCodes": [3, 4, -1000, -1600]
+        }
+    },
+    "epg": {
+        "disableAllAudio": true,
+        "disableArchiveAudio": true,
+        "disableArchiveInningMilestones": false,
+        "mediaStates": { "on": "MEDIA_ON", "archive": "MEDIA_ARCHIVE" },
+        "feedTypes": { "away": "AWAY", "home": "HOME", "national": "National" },
+        "catalogTitles": { "video": "MLBTV", "audio": "Audio" }
+    },
+    "airings": {
+        "disableAllAudio": true,
+        "disableArchiveAudio": true,
+        "disableLiveStartFromTheBeginning": false,
+        "disableArchiveInningMilestones": false,
+        "disableLiveInningMilestones": false,
+        "disablePlayMilestones": false,
+        "disableLivePlayMilestones": false,
+        "disableVODPlayMilestones": false,
+        "mediaStates": { "on": "ON" },
+        "mediaProductTypes": { "live": "LIVE", "archive": "VOD" },
+        "mediaTypes": { "video": "VIDEO", "audio": "AUDIO" },
+        "feedTypes": { "away": "Away", "home": "Home", "national": "National" },
+        "mediaRights": [
+            {
+                "codes": ["blackout"],
+                "descriptionRegex": "",
+                "dictionaryKey": "media_rights_blackout",
+                "gamePriorityOrder": 99
+            },
+            {
+                "codes": ["no_entitlement"],
+                "descriptionRegex": "_fox",
+                "dictionaryKey": "media_rights_mvpd_fox",
+                "gamePriorityOrder": 0
+            },
+            {
+                "codes": ["no_entitlement"],
+                "descriptionRegex": "_mlbn",
+                "dictionaryKey": "media_rights_mvpd_mlbn",
+                "gamePriorityOrder": 0
+            },
+            {
+                "codes": ["no_entitlement"],
+                "descriptionRegex": "_tbs",
+                "dictionaryKey": "media_rights_mvpd_tbs",
+                "gamePriorityOrder": 0
+            },
+            {
+                "codes": ["no_entitlement"],
+                "descriptionRegex": "_fs1",
+                "dictionaryKey": "media_rights_mvpd_fs1",
+                "gamePriorityOrder": 0
+            },
+            {
+                "codes": ["no_entitlement"],
+                "descriptionRegex": "_espn",
+                "dictionaryKey": "media_rights_mvpd",
+                "gamePriorityOrder": 1
+            }
+        ],
+        "restricted": { "codes": [] }
+    },
+    "mediaFramework": {
+        "enabledPlaybackOptions": {
+            "playbackGameCatchUp": false,
+            "playbackStartFromTheBeginning": true,
+            "playbackWatchLive": true,
+            "playbackResume": false
+        },
+        "orderedPlaybackOptions": [
+            "playbackResume",
+            "playbackGameCatchUp",
+            "playbackWatchLive",
+            "playbackStartFromTheBeginning"
+        ],
+        "mediaStates": {
+            "mediaOn": "MEDIA_ON",
+            "mediaArchive": "MEDIA_ARCHIVE"
+        },
+        "mediaTitles": { "audio": "Audio", "video": "MLBTV" },
+        "mediaTypes": { "audio": "audio", "video": "video" },
+        "blackoutTypes": {
+            "default": "default",
+            "wbc": "WBC_NATIONAL",
+            "national": "NATIONAL",
+            "local": "LOCAL",
+            "localTeam": "TEAM",
+            "regional": "REGIONAL",
+            "international": "INTERNATIONAL"
+        },
+        "authSuccessStatus": "SuccessStatus",
+        "blackoutSuccessStatus": "SuccessStatus",
+        "unavailableMediaStates": ["MEDIA_OFF", "MEDIA_DONE", "MEDIA_DEAD"],
+        "multiAngleSubject": "MULTIANGLE_COVERAGE",
+        "videoTypeKeyword": "video",
+        "audioTypeKeyword": "audio",
+        "outOfMarketCoverageType": "out-of-market",
+        "adDesignator": "_ADS",
+        "showAds": true,
+        "orderedPlaybackScenarios": [
+            "HTTP_CLOUD_WIRED_ADS_60",
+            "HTTP_CLOUD_WIRED_60",
+            "HTTP_CLOUD_WIRED_ADS",
+            "HTTP_CLOUD_WIRED",
+            "HTTP_CLOUD_AUDIO"
+        ],
+        "premiumScenarios": [
+            "HTTP_CLOUD_WIRED_60",
+            "HTTP_CLOUD_WIRED_ADS_60",
+            "HTTP_CLOUD_TABLET_60"
+        ]
+    },
+    "adProviders": {
+        "adEngine": {
+            "startDate": "2001-01-01T00:00:00Z",
+            "endDate": "2018-07-19T11:59:59Z",
+            "adInsertionStrategy": "SSAI",
+            "deviceName": "html5_samsung_tizen",
+            "path": "settoken/v1?sect=/2605/mlb.tv/${deviceName}_live&ssess=${fguid}&trk=s&platform=ps4&app=mlbtv&partnr=mlb&uid=${uid}&country=${country_code}&zip=${zip_code}&cdn=${CDN}&corigin=${CDNORIGIN}",
+            "cookieHostName": "aeng-qa.svc.mlb.com",
+            "host": "//aeng-qa.svc.mlb.com/"
+        },
+        "googleDAI": {
+            "startDate": "2018-07-20T00:00:00Z",
+            "endDate": "2099-12-31T11:59:59Z",
+            "adInsertionStrategy": "SSAI",
+            "cmsId": "2473420",
+            "deviceName": "html5_bbd_samsung_tizen17",
+            "serverSideBeaconingFlag": "0",
+            "networkId": "2605",
+            "adUnit": "qa_mlb.tv",
+            "tagSuffixLive": "_live",
+            "tagSuffixVOD": "_live",
+            "createSessionPath": "/pods/api/v1/cmsid/${cmsId}/vid/${contentId}/streams?playback_url=${manifestUrl}&iu=/${networkId}/${adUnit}/${deviceName}${tagSuffix}&dai-ssb=${serverSideBeaconingFlag}&ppid=${ppid}",
+            "heartbeatPath": "/pods/api/v1/cmsid/${cmsId}/vid/${contentId}/streams",
+            "heartbeatInterval": 60000,
+            "host": "https://dai.google.com",
+            "cookieHostName": "dai.google.com"
+        }
+    },
+    "mediaPlayer": {
+        "isEntityCleanUpEnabled": false,
+        "maxTransportSpeed": 32,
+        "transportInterval": 200,
+        "transportSpeedMultiplier": 3,
+        "transportMaxCheckBuffer": 3000,
+        "hideControlsTimer": 8000,
+        "highlightHideControlsTimer": 5000,
+        "bypass": true,
+        "applicationName": "mlb-bbd-app",
+        "useOverridePBS": true,
+        "overridePBSValue": "tizen",
+        "rewriteSdkUrl": false,
+        "ignoreQuickComplete": false,
+        "quickCompleteWindow": 5000,
+        "playerConfig": {
+            "tizen": {
+                "type": "tizen",
+                "url": "https://cd.mlb.com/html5/players/core-browser-player-tizen-1.0.3.js"
+            },
+            "html": {
+                "type": "html",
+                "url": "https://cd.mlb.com/html5/players/core-browser-player-html5-1.1.4.js"
+            },
+            "orsay": {
+                "type": "orsay",
+                "url": "https://cd.mlb.com/html5/players/core-browser-player-samsung-1.0.2.js"
+            },
+            "sony": {
+                "type": "html",
+                "url": "https://cd.mlb.com/html5/players/core-browser-player-sony-1.1.3.js"
+            },
+            "webos": {
+                "type": "html",
+                "url": "https://cd.mlb.com/html5/players/core-browser-player-webos-1.1.6.js"
+            },
+            "bamhls": {
+                "type": "bamhls",
+                "url": "https://cd.mlb.com/html5/players/core-browser-player-bamhls-1.2.1.js"
+            },
+            "default": {
+                "type": "html",
+                "url": "//cd.mlb.com/html5/players/core-browser-player-html5.js"
+            }
+        },
+        "disableAiringUpdate": false,
+        "airingUpdateInterval": 120000,
+        "todaysGameUpdateInterval": 30000,
+        "milestonesUpdateInterval": 60000,
+        "displayTodaysGame": true,
+        "videoTypeOptions": {
+            "gameVideo": { "mimeType": "application/vnd.apple.mpegurl" },
+            "gameAudio": { "mimeType": "application/vnd.apple.mpegurl" },
+            "highlight": { "mimeType": "application/vnd.apple.mpegurl" },
+            "recap": { "mimeType": "application/vnd.apple.mpegurl" },
+            "preroll": { "mimeType": "video/m4v" }
+        },
+        "forceHttps": false,
+        "bamHLS": { "enabledType": "all" },
+        "isLiveThreshold": 30000,
+        "trickplayArchive": {
+            "disablePlayPause": false,
+            "disableTenSecondSeek": false,
+            "disableFastForwardRewind": false
+        },
+        "trickplayLive": {
+            "disablePlayPause": false,
+            "disableTenSecondSeek": false,
+            "disableFastForwardRewind": false,
+            "disableGoLive": false
+        },
+        "drmPBSTemplate": "${pbs}-drm",
+        "drmEnabled": false
+    },
+    "mlbDateUpdateInterval": 900000,
+    "scores": { "updateInterval": 30000 },
+    "login": { "handleEnterOnLoginAndPassword": true },
+    "keyboard": {
+        "useCustomKeyboard": false,
+        "spacebarSize": 9,
+        "commandKeySize": 2,
+        "rows": [
+            [
+                { "key": "`", "shift": "~" },
+                { "key": "1", "shift": "!" },
+                { "key": "2", "shift": "@" },
+                { "key": "3", "shift": "#" },
+                { "key": "4", "shift": "$" },
+                { "key": "5", "shift": "%" },
+                { "key": "6", "shift": "^" },
+                { "key": "7", "shift": "&" },
+                { "key": "8", "shift": "*" },
+                { "key": "9", "shift": "(" },
+                { "key": "0", "shift": ")" },
+                { "key": "-", "shift": "_" },
+                { "key": "=", "shift": "+" },
+                { "key": "Delete", "command": "delete" }
+            ],
+            [
+                { "key": "q", "shift": "Q" },
+                { "key": "w", "shift": "W" },
+                { "key": "e", "shift": "E" },
+                { "key": "r", "shift": "R" },
+                { "key": "t", "shift": "T" },
+                { "key": "y", "shift": "Y" },
+                { "key": "u", "shift": "U" },
+                { "key": "i", "shift": "I" },
+                { "key": "o", "shift": "O" },
+                { "key": "p", "shift": "P" },
+                { "key": "[", "shift": "{" },
+                { "key": "]", "shift": "}" },
+                { "key": "\\", "shift": "|" },
+                { "key": "Delete All", "command": "deleteAll" }
+            ],
+            [
+                { "key": "Shift Lock", "command": "shiftLock", "id": 0 },
+                { "key": "a", "shift": "A" },
+                { "key": "s", "shift": "S" },
+                { "key": "d", "shift": "D" },
+                { "key": "f", "shift": "F" },
+                { "key": "g", "shift": "G" },
+                { "key": "h", "shift": "H" },
+                { "key": "j", "shift": "J" },
+                { "key": "k", "shift": "K" },
+                { "key": "l", "shift": "L" },
+                { "key": ";", "shift": ":" },
+                { "key": "'", "shift": "\"" },
+                { "key": "Shift Lock", "command": "shiftLock", "id": 1 }
+            ],
+            [
+                { "key": "Shift", "command": "shift", "id": 0 },
+                { "key": "z", "shift": "Z" },
+                { "key": "x", "shift": "X" },
+                { "key": "c", "shift": "C" },
+                { "key": "v", "shift": "V" },
+                { "key": "b", "shift": "B" },
+                { "key": "n", "shift": "N" },
+                { "key": "m", "shift": "M" },
+                { "key": ",", "shift": "<" },
+                { "key": ".", "shift": ">" },
+                { "key": "/", "shift": "?" },
+                { "key": "@", "shift": "" },
+                { "key": "Shift", "command": "shift", "id": 1 }
+            ],
+            [
+                { "key": "Cancel", "command": "cancel" },
+                { "key": "Space", "command": "space" },
+                { "key": ".com", "command": "dotCom" },
+                { "key": "Enter", "command": "enter" }
+            ]
+        ]
+    },
+    "home": {
+        "topics": { "highlights": "highlight", "news": "manager-postgame" },
+        "updateInterval": 30000,
+        "isDisabled": false
+    },
+    "videos": {
+        "stubLimit": 8,
+        "maxLimit": 40,
+        "topics": [
+            "manager-postgame",
+            "hbmig-mlbtax-vtp-player-tracking",
+            "highlight"
+        ],
+        "isDisabled": false,
+        "isCondensedDisabled": false,
+        "isRecapDisabled": false,
+        "playbackScenario": "hlsCloud",
+        "playbackScenario60": "HTTP_CLOUD_WIRED_60",
+        "subject": { "recap": "game recap", "condensed": "condensed game" },
+        "params": {
+            "limit": "$limit=${limit}",
+            "skip": "$skip=${page}",
+            "teamId": "tags.slug=teamid-${teamId}",
+            "topic": "tags.slug=${topicId}",
+            "gamePk": "tags.slug=gamepk-${gamePk}"
+        }
+    },
+    "omniture": {
+        "rsids": "mlbhtml5dev",
+        "params": {
+            "visitorNamespace": "mlb",
+            "trackingServer": "an.mlb.com",
+            "trackingServerSecure": "ans.mlb.com",
+            "linkTrackVars": "",
+            "contextData": { "app": { "platform": "HTML5" } }
+        }
+    },
+    "debug": {
+        "consoleEnabled": true,
+        "captureOnStartup": true,
+        "consoleOnlyFromTOS": false,
+        "consoleEnabledEmailRegex": ".mlb.com$|.mlbtest.com$",
+        "logLevels": ["debug", "info", "warn", "error", "log"],
+        "maxMessageSize": 200,
+        "bufferSize": 150,
+        "environmentOverlayDisabledUrlRegex": ".*cd\\.mlb\\.com.*|.*cd-stage\\.mlb\\.com\\/html5\\/lg_tv_webos\\/.*"
+    },
+    "logging": { "level": "debug" },
+    "conviva": {
+        "customerKey": "36c5a9412da1c521ff9a432d0161c15839224313",
+        "gatewayUrl": "https://mlb-test.testonly.conviva.com"
+    },
+    "bamSdk": {
+        "environment": "qa",
+        "debugEnabled": true,
+        "clientId": "mlbaseball-7993996e",
+        "clientApiKey": "bWxidHYmYnJvd3NlciYxLjAuMA.V0a2BjCEBWrySNfO8QKeVv5ykRxzfo4uXFq5jo0ASSo",
+        "tokenApiKey": "LxJprQY1ihvrjVb6EL487wjXMQk5QjR72jHsnbh6",
+        "startDate": "2018-01-01",
+        "clearStorageOnLoad": false
+    }
+}

@@ -4,6 +4,8 @@ import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import formElements from '../../../config/form-elements';
+import withErrorHandler from 'hoc/withErrorHandler/withErrorHandler';
+import * as actions from 'store/actions';
 
 import axios from '../../../axios-orders';
 
@@ -22,6 +24,7 @@ class ContactData extends Component {
         axios
             .get('config.json')
             .then((result) => {
+                console.warn('config result : ', result.data);
                 this.setState({
                     orderForm: { ...formElements },
                     defaultDelivery: result.data.contactform.defaultDelivery
@@ -53,11 +56,21 @@ class ContactData extends Component {
 
     orderClickedHandler = (evt) => {
         evt.preventDefault();
-        this.setState({ loading: true });
+        // this.setState({ loading: true });
+        console.warn('this.state.orderForm : ', this.state.orderForm);
 
         const formData = {};
         for (const key in this.state.orderForm) {
-            formData[key] = this.state.orderForm[key].value;
+            const element = this.state.orderForm[key];
+            let formDataValue = element.value;
+            if (
+                !formDataValue ||
+                (formDataValue.length < 1 && element.elementType === 'select')
+            ) {
+                formDataValue = element.config.defaultValue;
+            }
+
+            formData[key] = formDataValue;
         }
 
         const order = {
@@ -66,16 +79,7 @@ class ContactData extends Component {
             contactData: formData
         };
 
-        axios
-            .post('/orders.json', order)
-            .then((response) => {
-                this.setState({ loading: false });
-                this.props.history.push('/');
-            })
-            .catch((error) => {
-                console.error('Problem sending order:\n', error);
-                this.setState({ loading: false });
-            });
+        this.props.sendOrder(order);
     };
 
     inputChangedHandler = (evt, key) => {
@@ -156,7 +160,7 @@ class ContactData extends Component {
             </form>
         );
 
-        if (this.state.loading) {
+        if (this.props.loading) {
             form = <Spinner />;
         }
         return (
@@ -170,9 +174,19 @@ class ContactData extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.ingredients,
-        totalPrice: state.totalPrice
+        ingredients: state.burgerBuilder.ingredients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        loading: state.order.loading
     };
 };
 
-export default connect(mapStateToProps)(ContactData);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        sendOrder: (orderData) => dispatch(actions.sendOrder(orderData))
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withErrorHandler(ContactData, axios));
